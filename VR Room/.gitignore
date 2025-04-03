@@ -1,0 +1,75 @@
+#################################
+# UNITY (Core)
+#################################
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+Assets/AssetStoreTools*
+UserSettings/
+MemoryCaptures/
+
+#################################
+# BUILD ARTIFACTS
+#################################
+*.apk
+*.unitypackage
+*.aab
+*.zip
+*.exe
+*.dmg
+
+#################################
+# EDITORS (VS, VSCode, Rider)
+#################################
+.vscode/
+.vs/
+.idea/
+*.csproj
+*.sln
+*.suo
+*.user
+*.pidb
+*.booproj
+*.svd
+*.tlog
+
+#################################
+# OS / SYSTEM FILES
+#################################
+.DS_Store
+Thumbs.db
+
+#################################
+# CRASH / DEBUG FILES
+#################################
+*.log
+*.stacktrace
+*.dmp
+crash/
+BuildReport.xml
+
+#################################
+# SHADER GRAPH / GENERATED
+#################################
+*.shadergraph.meta
+*.shadergraph.importsettings
+*.shader
+*.shader.meta
+
+#################################
+# XR SPECIFIC (OpenXR etc.)
+#################################
+Assets/XR/Settings/OpenXR Package Settings.asset
+XR.meta
+
+#################################
+# GIT LFS - exclude tracked binaries manually if needed
+#################################
+# (files below should be tracked via .gitattributes instead)
+# *.psd
+# *.fbx
+# *.wav
+# *.mp4
+# *.blend
