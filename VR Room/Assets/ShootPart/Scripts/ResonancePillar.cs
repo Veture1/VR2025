@@ -5,7 +5,6 @@ public class ResonancePillar : MonoBehaviour
 {
     [Header("Note Settings")]
     public int totalNotes = 8;
-    public float pillarHeight = 2.0f;
     public List<int> targetSequence = new List<int>(); // 例如：1-3-5
 
     [Header("Success Action")]
@@ -30,13 +29,38 @@ public class ResonancePillar : MonoBehaviour
     private List<int> currentInput = new List<int>();
     private bool isSolved = false;
 
+    private float pillarBottomY;
+    private float pillarTopY;
+    public float pillarHeight;
+
+    void Start()
+    {
+        // 获取柱子的世界空间边界
+        Renderer pillarRenderer = GetComponent<Renderer>();
+        if (pillarRenderer != null)
+        {
+            pillarBottomY = pillarRenderer.bounds.min.y;
+            pillarTopY = pillarRenderer.bounds.max.y;
+            pillarHeight = pillarTopY - pillarBottomY;  // 计算柱子的总高度
+
+            Debug.Log("Pillar Bottom Y: " + pillarBottomY);
+            Debug.Log("Pillar Top Y: " + pillarTopY);
+            Debug.Log("Pillar Height: " + pillarHeight);
+        }
+    }
+
     public void RegisterHit(Vector3 hitPoint)
     {
         if (isSolved || audioSource == null || baseNoteClip == null) return;
 
-        // 映射 hit 到音阶编号
-        float localY = transform.InverseTransformPoint(hitPoint).y;
-        int note = Mathf.Clamp(Mathf.FloorToInt(localY / (pillarHeight / totalNotes)) + 1, 1, totalNotes);
+        // 将 hitPoint 的 Y 坐标映射到柱子的 Y 坐标范围（pillarBottomY 到 pillarTopY）
+        float hitY = hitPoint.y;
+
+        // 计算 hitY 在柱子上的相对位置 (从地面到顶端的比例)
+        float normalizedHeight = Mathf.InverseLerp(pillarBottomY, pillarTopY, hitY);
+
+        // 将 normalizedHeight 映射到音阶
+        int note = Mathf.Clamp(Mathf.FloorToInt(normalizedHeight * totalNotes), 0, totalNotes - 1) + 1;
 
         // 播放音符（通过 pitch 调整）
         audioSource.pitch = notePitches[note - 1];

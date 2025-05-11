@@ -4,6 +4,7 @@ public class Projectile : MonoBehaviour
 {
     public AudioClip hitClip;
     public ParticleSystem dissolveParticles;
+    public float offsetDistance;
     public float dissolveDelay = 1f;
     public float dissolveDuration = 1f;
     public GameObject squashedVisual; // 小坨的形态
@@ -27,7 +28,7 @@ public class Projectile : MonoBehaviour
         {
             AudioSource.PlayClipAtPoint(hitClip, transform.position);
         }
-        // 获取命中点和法线
+
         ContactPoint contact = collision.contacts[0];
         Vector3 hitPoint = contact.point;
         Vector3 hitNormal = contact.normal;
@@ -37,59 +38,35 @@ public class Projectile : MonoBehaviour
         {
             pillar.RegisterHit(contact.point);
         }
-        // 检查是否有震动脚本
+
         ShakeOnHit shaker = collision.collider.GetComponent<ShakeOnHit>();
         if (shaker != null)
         {
             shaker.Shake();
-            // 保持原状，让它掉下来
         }
-        else
-        {
-            // 粘在碰撞物体上
-            rb.isKinematic = true;
-            transform.parent = collision.transform;
 
-            transform.position = hitPoint + hitNormal * 0.01f;
-            transform.rotation = Quaternion.LookRotation(-hitNormal);
+        // 粘附在碰撞表面 - 改进部分
+        rb.isKinematic = true;
+        transform.parent = collision.transform;
 
-            // 切换成“坨状”外观
-            if (normalVisual != null) normalVisual.SetActive(false);
-            if (squashedVisual != null) squashedVisual.SetActive(true);
-        }
+        // 计算子弹在表面上的正确位置
+        //float offsetDistance = 0.1f; // 增加偏移距离
+                                     // 获取子弹的半径（假设是球体碰撞体）
+        float projectileRadius = GetComponent<SphereCollider>()?.radius ?? 0.5f;
+        // 考虑子弹半径和额外偏移
+        transform.position = hitPoint + hitNormal * (projectileRadius + offsetDistance);
+
+        // 调整旋转使子弹"平贴"在表面
+        transform.rotation = Quaternion.FromToRotation(Vector3.up, hitNormal);
+
+        // 切换成"坨状"外观
+        if (normalVisual != null) normalVisual.SetActive(false);
+        if (squashedVisual != null) squashedVisual.SetActive(true);
 
         // 开始溶解流程
         Invoke(nameof(StartDissolve), dissolveDelay);
-
-
-        //// 判断是否有 Shake 脚本
-        //ShakeOnHit shaker = collision.collider.GetComponent<ShakeOnHit>();
-
-        //if (shaker != null)
-        //{
-        //    shaker.Shake();
-        //    // 不粘附，让子弹自然掉落
-        //    return;
-        //}
-
-        //// 粘附逻辑
-        //Rigidbody rb = GetComponent<Rigidbody>();
-        //if (rb != null)
-        //{
-        //    rb.isKinematic = true; // 停止物理运动
-        //}
-        //transform.position = hitPoint + hitNormal * 0.01f;
-        //transform.rotation = Quaternion.LookRotation(-hitNormal);
-
-        //// 切换成“坨状”外观
-        //if (normalVisual != null) normalVisual.SetActive(false);
-        //if (squashedVisual != null) squashedVisual.SetActive(true);
-
-        //// 绑定到目标表面（可选，让它跟着动）
-        //transform.parent = collision.transform;
-        //// 开始溶解流程
-        //Invoke(nameof(StartDissolve), dissolveDelay);
     }
+
 
     private void StartDissolve()
     {
