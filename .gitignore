@@ -2,14 +2,14 @@
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
 #
-.utmp/
-/[Ll]ibrary/
-/[Tt]emp/
-/[Oo]bj/
-/[Bb]uild/
-/[Bb]uilds/
-/[Ll]ogs/
-/[Uu]ser[Ss]ettings/
+/VR Room.utmp/
+/VR Room/[Ll]ibrary/
+/VR Room/[Tt]emp/
+/VR Room/[Oo]bj/
+/VR Room/[Bb]uild/
+/VR Room/[Bb]uilds/
+/VR Room/[Ll]ogs/
+/VR Room/[Uu]ser[Ss]ettings/
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
@@ -72,3 +72,7 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# IDE settings
+.idea/
+.vscode/
