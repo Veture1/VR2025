@@ -1,55 +1,87 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Unity.XR.CoreUtils;
+using UnityEngine.XR.Interaction.Toolkit.Inputs.Haptics;
 public class RopeSwing : MonoBehaviour
-{
+{   
+    [Header("Basic References")]
     public Transform startSwingHand;
-    public float maxDistance = 10;
     public LayerMask swingableLayer;
-
     public Transform predictedPoint;
-    public bool limitPullDirection = true;
-    
-    public InputActionProperty swingAction;
-    
-    public Rigidbody playerRigidbody;
-    
     public LineRenderer lineRenderer;
-    
-    private ConfigurableJoint joint;
+    public XROrigin playerOrigin;
 
+    
+    [Header("Input ")]
+    public InputActionProperty swingAction;
+
+    [Header("Rope Parameters")]
+    public float maxDistance = 10;
     public float springForce =20f;
     public float damper=200f;
+    public float shrinkSpeed = 5f;               // m/s
+    public float minLimit = 0.3f;                // shortest rope length
+
+    [Header("Optional Haptic Feedback")] 
+    public HapticImpulsePlayer haptics;
+    [Range(0, 1)]
+    public float intensity=0.5f;
+    [Range(0, 1)]
+    public float duration = 0.15f;    //seconds
+    
+    private Rigidbody playerRigidbody;
+    private ConfigurableJoint joint;
+    private CharacterController characterController;
+
     private Vector3 swingPoint;
     private bool HasHit;
+    private bool limitPullDirection = true;
     
     private Vector3 yAxis = Vector3.up;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        characterController = playerOrigin.gameObject.GetComponent<CharacterController>();
+        playerRigidbody = playerOrigin.gameObject.GetComponent<Rigidbody>();
+
     }
 
     // Update is called once per frame
     void Update()
     {
         GetSwingPoint();
+        HandleInput();
+        DrawRope();
+        
+    }
 
+    public void HandleInput()
+    {
         if (swingAction.action.WasPressedThisFrame() && AllowedDirection())
         {
             StartSwing();
+            TriggerHaptic();
         }
-        else if (swingAction.action.WasReleasedThisFrame())
+            
+        if (joint&& swingAction.action.IsPressed())
         {
+            ShrinkLimit();
+        }
+        if (swingAction.action.WasReleasedThisFrame())
+        {
+            
             StopSwing();
         }
-        DrawRope();
     }
-
     public void StartSwing()
     {
         if (HasHit)
-        {
+        {   
+            characterController.enabled = false;
+            playerRigidbody.isKinematic = false; // start physics
+            
             joint = playerRigidbody.gameObject.AddComponent<ConfigurableJoint>();
             joint.autoConfigureConnectedAnchor = false;
             joint.connectedAnchor = swingPoint;
@@ -60,7 +92,8 @@ public class RopeSwing : MonoBehaviour
             joint.zMotion = ConfigurableJointMotion.Limited;
             
             SoftJointLimit limit = new SoftJointLimit();
-            limit.limit = 0.01f; 
+            float dist = Vector3.Distance(startSwingHand.position, swingPoint);
+            limit.limit = dist + 0.5f;
             joint.linearLimit = limit;
 
             SoftJointLimitSpring limitSpring = new SoftJointLimitSpring();
@@ -71,13 +104,21 @@ public class RopeSwing : MonoBehaviour
            
             joint.anchor = Vector3.zero;
             joint.targetPosition = Vector3.zero;
+            
         }
     }
 
+    public void ShrinkLimit()
+    {
+        var lim = joint.linearLimit;
+        lim.limit = Mathf.MoveTowards(lim.limit, minLimit, shrinkSpeed * Time.deltaTime);
+        joint.linearLimit = lim;
+    }
     public void StopSwing()
     {
         Destroy(joint);
-        playerRigidbody.linearVelocity = Vector3.zero;
+        characterController.enabled = true;
+        playerRigidbody.isKinematic = true; // turn off physics
     }
 
     public void GetSwingPoint()
@@ -128,15 +169,25 @@ public class RopeSwing : MonoBehaviour
         else
         {
             // horizontal/vertical direction (+- 5 degree)
-            float cosWithYAxis = Vector3.Dot(startSwingHand.forward.normalized, yAxis);
-            if (cosWithYAxis <= 0.08f && cosWithYAxis >= -0.08f)
-                return true;
-            if (cosWithYAxis >= 0.9 || cosWithYAxis < -0.9)
-                return true;
-               
-            return false;
+            return InHorizontalDirection() | InVerticalDirection();
         }
     }
+
+    public bool InHorizontalDirection()
+    {
+        float cosWithYAxis = Vector3.Dot(startSwingHand.forward.normalized, yAxis);
+        if (cosWithYAxis <= 0.08f && cosWithYAxis >= -0.08f)
+            return true;
+        return false;
+    }
+    public bool InVerticalDirection()
+    {
+        float cosWithYAxis = Vector3.Dot(startSwingHand.forward.normalized, yAxis);
+        if (cosWithYAxis >= 0.9 || cosWithYAxis < -0.9)
+            return true;
+        return false;
+    }
+    
 
     public void ChangePredictedPointColor(bool ifValid)
     {
@@ -145,5 +196,12 @@ public class RopeSwing : MonoBehaviour
             else color = Color.white;
         var pointRenderer = predictedPoint.gameObject.GetComponent<Renderer>();
         pointRenderer.material.SetColor("_Color", color);
+    }
+
+    public void TriggerHaptic()
+    {
+        if (intensity > 0 && haptics != null)
+            haptics.SendHapticImpulse(intensity, Time.deltaTime);
+
     }
 }
