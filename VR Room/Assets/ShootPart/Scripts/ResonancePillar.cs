@@ -91,14 +91,21 @@ public class ResonancePillar : MonoBehaviour
             PuzzleSolved();
         }
     }
+    public ParticleSystem breakEffectPrefab;
+
 
     private void PuzzleSolved()
     {
         isSolved = true;
         Debug.Log("Puzzle Solved!");
+
         if (objectToDisableOnSuccess != null)
         {
+            //breakEffect.transform.position = transform.position; 
+            Instantiate(breakEffectPrefab, transform.position, transform.rotation);
+            //breakEffect.Play();
             objectToDisableOnSuccess.SetActive(false);
+
         }
     }
 }
