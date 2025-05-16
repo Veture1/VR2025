@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4491202790217949333}
-  - component: {fileID: 7001286865187832988}
+  - component: {fileID: 4478735020941325052}
   m_Layer: 0
   m_Name: Shooter
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7001286865187832988
+--- !u!114 &4478735020941325052
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,15 +41,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 7781374396672911932}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: abcd312330c9f03419ac5be7770945c1, type: 3}
+  m_Script: {fileID: 11500000, guid: 28c77384d04e81e47b52d8607fa2f4a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectilePrefab: {fileID: 296515746264641086, guid: 250e983d29da9cb40b4a093845eb15ec, type: 3}
-  firePoint: {fileID: 4491202790217949333}
-  shootAction: {fileID: 83097790271614945, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  projectilePrefab: {fileID: 296515746264641086, guid: 7802d15b076dfe3459dff9fdcc65f3aa,
+    type: 3}
+  firePoint: {fileID: 0}
+  shootAction: {fileID: 0}
   maxChargeTime: 3
   baseSpeed: 10
   sfxSource: {fileID: 0}
-  chargeClip: {fileID: 8300000, guid: 60cf433362b0c4a48b76efa4ddb18486, type: 3}
-  fireClip: {fileID: 8300000, guid: 7cd3ad2e25b18014da2c638680ab54f0, type: 3}
+  chargeClip: {fileID: 8300000, guid: f994fc819ee862c4091ed5cbabd6cac2, type: 3}
+  fireClip: {fileID: 8300000, guid: f62ae080ad72f8e4c9943be6ce113c27, type: 3}
   fadeOutDuration: 0.3
