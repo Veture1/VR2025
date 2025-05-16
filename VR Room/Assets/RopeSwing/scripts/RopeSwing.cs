@@ -85,15 +85,20 @@ public class RopeSwing : MonoBehaviour
             joint = playerRigidbody.gameObject.AddComponent<ConfigurableJoint>();
             joint.autoConfigureConnectedAnchor = false;
             joint.connectedAnchor = swingPoint;
+            joint.anchor = Vector3.zero;    
             // joint.connectedBody = null;
+            
+            Vector3 ropeDir = (swingPoint - playerRigidbody.position).normalized;
+            joint.axis = playerRigidbody.transform.InverseTransformDirection(ropeDir); 
+            joint.secondaryAxis = Vector3.up;
 
             joint.xMotion = ConfigurableJointMotion.Limited;
             joint.yMotion = ConfigurableJointMotion.Limited;
             joint.zMotion = ConfigurableJointMotion.Limited;
             
             SoftJointLimit limit = new SoftJointLimit();
-            float dist = Vector3.Distance(startSwingHand.position, swingPoint);
-            limit.limit = dist + 0.5f;
+            float dist = Vector3.Distance(playerRigidbody.position, swingPoint);
+            limit.limit = dist;
             joint.linearLimit = limit;
 
             SoftJointLimitSpring limitSpring = new SoftJointLimitSpring();
@@ -113,6 +118,9 @@ public class RopeSwing : MonoBehaviour
         var lim = joint.linearLimit;
         lim.limit = Mathf.MoveTowards(lim.limit, minLimit, shrinkSpeed * Time.deltaTime);
         joint.linearLimit = lim;
+        Vector3 ropeDir = (swingPoint - playerRigidbody.position).normalized;
+        joint.axis = playerRigidbody.transform.InverseTransformDirection(ropeDir); 
+        joint.secondaryAxis = Vector3.up;
     }
     public void StopSwing()
     {
@@ -168,8 +176,8 @@ public class RopeSwing : MonoBehaviour
             return true;
         else
         {
-            // horizontal/vertical direction (+- 5 degree)
-            return InHorizontalDirection() | InVerticalDirection();
+            // vertical direction (+- 5 degree)
+            return  InVerticalDirection();
         }
     }
 
