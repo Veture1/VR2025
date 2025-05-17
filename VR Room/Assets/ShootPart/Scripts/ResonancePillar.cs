@@ -10,6 +10,12 @@ public class ResonancePillar : MonoBehaviour
     [Header("Success Action")]
     public GameObject objectToDisableOnSuccess;
 
+    [Header("Reward Settings")]
+    public GameObject rewardGem; // 3D宝石物体
+    private Rigidbody gemRigidbody;
+    private Collider gemCollider;
+    private FloatingObject gemFloatScript;
+
     [Header("Audio Settings")]
     public AudioSource audioSource;
     public AudioClip baseNoteClip; // 统一使用一个音
@@ -46,6 +52,14 @@ public class ResonancePillar : MonoBehaviour
             Debug.Log("Pillar Bottom Y: " + pillarBottomY);
             Debug.Log("Pillar Top Y: " + pillarTopY);
             Debug.Log("Pillar Height: " + pillarHeight);
+        }
+
+        // 自动获取宝石的组件
+        if (rewardGem != null)
+        {
+            gemRigidbody = rewardGem.GetComponent<Rigidbody>();
+            gemCollider = rewardGem.GetComponent<Collider>();
+            gemFloatScript = rewardGem.GetComponent<FloatingObject>();
         }
     }
 
@@ -101,11 +115,20 @@ public class ResonancePillar : MonoBehaviour
 
         if (objectToDisableOnSuccess != null)
         {
-            //breakEffect.transform.position = transform.position; 
             Instantiate(breakEffectPrefab, transform.position, transform.rotation);
-            //breakEffect.Play();
             objectToDisableOnSuccess.SetActive(false);
-
         }
+
+        // 激活宝石的刚体和碰撞器
+        if (gemRigidbody != null)
+        {
+            gemRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            gemRigidbody.isKinematic = false;
+        }
+        if (gemCollider != null) gemCollider.enabled = true;
+
+        // 关闭浮动效果
+        if (gemFloatScript != null) gemFloatScript.enabled = false;
     }
+
 }
