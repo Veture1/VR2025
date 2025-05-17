@@ -69,6 +69,11 @@ public class EndSequenceController : MonoBehaviour
         Debug.Log("Play Again Button Clicked");
         SceneManager.LoadScene("RoomSample");   
     }
+    public void OnPlayTUT()
+    {
+        Debug.Log("TUT Button Clicked");
+        SceneManager.LoadScene("Demo Scene");
+    }
 
     public void OnQuit()
     {
