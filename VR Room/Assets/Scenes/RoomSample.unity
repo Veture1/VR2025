@@ -1347,12 +1347,12 @@ PrefabInstance:
     - target: {fileID: 7907195369452586975, guid: 6aa5a99158013b04a8edcf36087088e7,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.21000671
+      value: -0.37
       objectReference: {fileID: 0}
     - target: {fileID: 7907195369452586975, guid: 6aa5a99158013b04a8edcf36087088e7,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3.709999
+      value: 3.79
       objectReference: {fileID: 0}
     - target: {fileID: 7907195369452586975, guid: 6aa5a99158013b04a8edcf36087088e7,
         type: 3}
@@ -3094,21 +3094,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1954016261}
     m_Modifications:
-    - target: {fileID: 529495952199817066, guid: e4d896cb25f634348b31866a30a314cd,
-        type: 3}
-      propertyPath: haptics
-      value: 
-      objectReference: {fileID: 1954016249}
-    - target: {fileID: 529495952199817066, guid: e4d896cb25f634348b31866a30a314cd,
-        type: 3}
-      propertyPath: playerOrigin
-      value: 
-      objectReference: {fileID: 1954016260}
-    - target: {fileID: 529495952199817066, guid: e4d896cb25f634348b31866a30a314cd,
-        type: 3}
-      propertyPath: startSwingHand
-      value: 
-      objectReference: {fileID: 1954016250}
     - target: {fileID: 529495952199817066, guid: 778c31f533e70904ca745d162fb6e3f9,
         type: 3}
       propertyPath: haptics
@@ -3184,6 +3169,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: RopeSwing
       objectReference: {fileID: 0}
+    - target: {fileID: 529495952199817066, guid: e4d896cb25f634348b31866a30a314cd,
+        type: 3}
+      propertyPath: haptics
+      value: 
+      objectReference: {fileID: 1954016249}
+    - target: {fileID: 529495952199817066, guid: e4d896cb25f634348b31866a30a314cd,
+        type: 3}
+      propertyPath: playerOrigin
+      value: 
+      objectReference: {fileID: 1954016260}
+    - target: {fileID: 529495952199817066, guid: e4d896cb25f634348b31866a30a314cd,
+        type: 3}
+      propertyPath: startSwingHand
+      value: 
+      objectReference: {fileID: 1954016250}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

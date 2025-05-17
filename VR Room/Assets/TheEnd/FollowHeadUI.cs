@@ -8,9 +8,11 @@ public class FollowHeadUI : MonoBehaviour
     void LateUpdate()
     {
         Vector3 targetPos = head.position + head.forward * distance;
-        transform.LookAt(head);
         targetPos.y += yOffset;
-        transform.position = targetPos;
-        transform.forward = -transform.forward; 
+        transform.position = targetPos; 
+        Vector3 lookPos = new Vector3(head.position.x, transform.position.y, head.position.z);
+        transform.LookAt(lookPos);
+        transform.forward = -transform.forward;
+
     }
 }
