@@ -40,7 +40,7 @@ public class Projectile : MonoBehaviour
         }
 
         ShakeOnHit shaker = collision.collider.GetComponent<ShakeOnHit>();
-        if (shaker != null)
+        if (shaker != null && pillar != null)
         {
             shaker.Shake();
         }

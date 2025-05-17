@@ -3,6 +3,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class DoorToggleButton : MonoBehaviour
 {
+    public static DoorToggleButton Instance { get; private set; } // Singleton instance
     [Tooltip("Door to control")]
     [SerializeField] private Door door;
 
@@ -12,6 +13,15 @@ public class DoorToggleButton : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this; // Set singleton instance
+        }
+        else
+        {
+            Destroy(gameObject); // Ensure only one instance exists
+            return;
+        }
         interactable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRBaseInteractable>();
         if (interactable == null)
         {

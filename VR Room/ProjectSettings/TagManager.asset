@@ -9,6 +9,7 @@ TagManager:
   - Controller
   - TouchDetector
   - Grabbalbe
+  - PortalTrigger
   layers:
   - Default
   - TransparentFX

@@ -2,10 +2,11 @@ using UnityEngine;
 
 public class Door : MonoBehaviour
 {
+    public static Door Instance { get; private set; } // 公开 Door 属性
     [Header("Door Settings")]
     [SerializeField] private float openAngle = 85f; // 门打开的角度
     [SerializeField] private float openSpeed = 2f; // 门打开的速度
-    private bool isOpened = false;
+    public bool isOpened = false;
 
     [Header("Audio Settings")]
     [SerializeField] private AudioClip openSound;
@@ -14,6 +15,18 @@ public class Door : MonoBehaviour
     private HingeJoint hingeJoint;
     private JointLimits hingeLimits;
 
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this; // 设置单例实例
+        }
+        else
+        {
+            Destroy(gameObject); // 确保只有一个实例
+            return;
+        }
+    }
     void Start()
     {
         hingeJoint = GetComponent<HingeJoint>();
