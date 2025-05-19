@@ -14,6 +14,19 @@ public class MusicPuzzle : MonoBehaviour
     public BoxShaker boxShaker;
     private bool solved = false;
 
+    [Header("Reward Settings")]
+    public GameObject rewardGem; // 3D绿色宝石
+
+    void Start()
+    {
+        // 自动获取宝石的组件
+        if (rewardGem != null)
+        {
+            // 这里可以添加对宝石的初始化代码
+            rewardGem.transform.GetChild(7).GetComponent<Light>().enabled = false;
+
+        }
+    }
     public void OnNotePlayed(string note)
     {
         if (solved) return;
@@ -28,8 +41,8 @@ public class MusicPuzzle : MonoBehaviour
         {
             Debug.Log("🎉 Solved the music puzzle！");
             solved = true;
-
-            if (audioSource != null && successSound != null)
+            rewardGem.transform.GetChild(7).GetComponent<Light>().enabled = true; // 激活宝石的光效
+                if (audioSource != null && successSound != null)
                 audioSource.PlayOneShot(successSound);
 
             if (lidSlider != null)

@@ -21,14 +21,14 @@ public class ScenePortal : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if (Door.Instance.isOpened && !moved)
+        if (TestDoor.Instance.isOpened && !moved)
         {
             ArrowFloat.Instance.MoveTo(transform); // 移动箭头到门上方
             moved = true; // 只移动一次
         }
-        if (moved && !Door.Instance.isOpened)
+        if (moved && !TestDoor.Instance.isOpened)
         {
-            ArrowFloat.Instance.MoveTo(DoorToggleButton.Instance.transform); // 移回去
+            ArrowFloat.Instance.MoveTo(TestDoorButton.Instance.transform); // 移回去
             moved = false; 
         }
     }
@@ -36,7 +36,7 @@ public class ScenePortal : MonoBehaviour
     {
         if (triggered) return;
         Debug.Log("Trigger entered by: " + other.name +", " + other.tag );
-        if (Door.Instance.isOpened && other.tag == "PortalTrigger")
+        if (TestDoor.Instance.isOpened && other.tag == "PortalTrigger")
         {
             triggered = true;
             StartCoroutine(TransitionScene());

@@ -14,6 +14,8 @@ public class Door : MonoBehaviour
 
     private HingeJoint hingeJoint;
     private JointLimits hingeLimits;
+    private Rigidbody rb;
+
 
     private void Awake()
     {
@@ -45,8 +47,13 @@ public class Door : MonoBehaviour
             audioSource = gameObject.AddComponent<AudioSource>();
         }
 
+        rb = GetComponent<Rigidbody>();
 
+        // ✅ 初始锁门
+        rb.isKinematic = true;
+        rb.constraints = RigidbodyConstraints.FreezeAll;
 
+        Debug.Log($"[Door] Init: HingeJoint Axis: {hingeJoint.axis}, Anchor: {hingeJoint.anchor}");
         // 输出调试信息
         Debug.Log($"HingeJoint Axis: {hingeJoint.axis}");
         Debug.Log($"HingeJoint Anchor: {hingeJoint.anchor}");
@@ -68,14 +75,15 @@ public class Door : MonoBehaviour
         }
 
         Debug.Log("[Door] Door is opening...");
-
+        hingeLimits.min = 0f;
         hingeLimits.max = openAngle;
         hingeJoint.limits = hingeLimits;
 
         hingeJoint.useMotor = true;
         JointMotor motor = hingeJoint.motor;
         motor.targetVelocity = openSpeed;
-        motor.force = 100;
+        //motor.force = 100;
+        motor.force = 500;
         hingeJoint.motor = motor;
 
         isOpened = true;
@@ -116,5 +124,15 @@ public class Door : MonoBehaviour
         isOpened = false;
 
         Debug.Log("[Door] Door closed.");
+    }
+
+    public void UnlockPhysics()
+    {
+        if (hingeJoint == null || rb == null) return;
+
+        rb.isKinematic = false;
+        rb.constraints = RigidbodyConstraints.None;
+
+        Debug.Log("[Door] Physics unlocked. Door is now interactive.");
     }
 }

@@ -27,6 +27,7 @@ public class DoorButton : MonoBehaviour
         }
     }
 
+
     private void OnEnable()
     {
         interactable.selectEntered.AddListener(OnButtonPressed);
@@ -61,8 +62,9 @@ public class DoorButton : MonoBehaviour
             Debug.Log("[DoorButton] Puzzle not complete yet!");
             return;
         }
-
-        door.Open();
+        Door.Instance.UnlockPhysics();
+        //door.Open();
+        Door.Instance.Open();
 
 
         if (successSound != null)
