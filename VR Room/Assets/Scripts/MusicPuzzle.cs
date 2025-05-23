@@ -16,6 +16,8 @@ public class MusicPuzzle : MonoBehaviour
 
     [Header("Reward Settings")]
     public GameObject rewardGem; // 3D绿色宝石
+    public GameObject Wall; // 宝石预制体
+    public ParticleSystem WallDissolve; // 宝石预制体
 
     void Start()
     {
@@ -24,6 +26,8 @@ public class MusicPuzzle : MonoBehaviour
         {
             // 这里可以添加对宝石的初始化代码
             rewardGem.transform.GetChild(7).GetComponent<Light>().enabled = false;
+            rewardGem.transform.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll; // 启用宝石的碰撞器
+
 
         }
     }
@@ -42,6 +46,10 @@ public class MusicPuzzle : MonoBehaviour
             Debug.Log("🎉 Solved the music puzzle！");
             solved = true;
             rewardGem.transform.GetChild(7).GetComponent<Light>().enabled = true; // 激活宝石的光效
+            rewardGem.transform.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None; // 禁用宝石的碰撞器
+            Wall.gameObject.SetActive(false); // 隐藏宝石预制体
+            WallDissolve.gameObject.GetComponent<ParticleSystem>().Play(); // 播放宝石预制体的粒子效果
+
                 if (audioSource != null && successSound != null)
                 audioSource.PlayOneShot(successSound);
 
