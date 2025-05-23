@@ -29,6 +29,9 @@ public class RopeSwing : MonoBehaviour
     public float intensity=0.5f;
     [Range(0, 1)]
     public float duration = 0.15f;    //seconds
+    [Header("Sound Effect")]
+    public AudioClip fallSound;
+    public AudioSource audioSource;
     
     private Rigidbody playerRigidbody;
     private ConfigurableJoint joint;
@@ -38,7 +41,8 @@ public class RopeSwing : MonoBehaviour
     private bool HasHit;
     private bool limitPullDirection = true;
     private float playerHeight;
-    
+    private bool wasGroundedLastFrame = true;
+
     private Vector3 yAxis = Vector3.up;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -84,7 +88,7 @@ public class RopeSwing : MonoBehaviour
 
         if (!swingAction.action.IsPressed())
         {
-            toKinematic();
+            HandleLanding();
         }
     }
     public void StartSwing()
@@ -219,26 +223,49 @@ public class RopeSwing : MonoBehaviour
     public void TriggerHaptic()
     {
         if (intensity > 0 && haptics != null)
-            haptics.SendHapticImpulse(intensity, Time.deltaTime);
+            haptics.SendHapticImpulse(intensity, duration);
 
     }
 
     private bool isGrounded()
     {
         float rayLength = 0.01f;  
-        Debug.DrawRay(playerRigidbody.position, Vector3.down*rayLength, Color.red);
+        // Debug.DrawRay(playerRigidbody.position, Vector3.down*rayLength, Color.red);
 
         return Physics.Raycast(playerRigidbody.position, Vector3.down, rayLength);
     }
 
+    private void HandleLanding()
+    {
+        bool grounded = isGrounded();
+
+        if (grounded && !wasGroundedLastFrame)//just landed
+        {
+            toKinematic();       
+            triggerFallSound();   
+        }
+
+        wasGroundedLastFrame = grounded;
+    }
+
     private void toKinematic()
     {
-        if (isGrounded())
-            {
-                // Debug.Log("Grounded, turn off rigid body");
-                playerRigidbody.linearVelocity = Vector3.zero;
-                characterController.enabled = true;
-                playerRigidbody.isKinematic = true; // turn off physics
-            }
+        
+        // Debug.Log("Grounded, turn off rigid body");
+        playerRigidbody.linearVelocity = Vector3.zero;
+        characterController.enabled = true;
+        playerRigidbody.isKinematic = true; // turn off physics
+        
+    }
+
+    private void triggerFallSound()
+    {
+        if (audioSource && fallSound)
+        {
+            audioSource.clip = fallSound;
+            audioSource.volume = 1f;
+            audioSource.loop = false;
+            audioSource.Play();
+        }
     }
 }
