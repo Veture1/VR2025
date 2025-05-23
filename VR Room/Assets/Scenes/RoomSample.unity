@@ -3795,6 +3795,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1954016261}
     m_Modifications:
+    - target: {fileID: 204344830443973213, guid: 778c31f533e70904ca745d162fb6e3f9,
+        type: 3}
+      propertyPath: m_Height
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 204344830443973213, guid: 778c31f533e70904ca745d162fb6e3f9,
+        type: 3}
+      propertyPath: m_Center.y
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 529495952199817066, guid: 778c31f533e70904ca745d162fb6e3f9,
         type: 3}
       propertyPath: haptics

@@ -11,7 +11,7 @@ public class RopeSwing : MonoBehaviour
     public Transform predictedPoint;
     public LineRenderer lineRenderer;
     public XROrigin playerOrigin;
-
+    
     
     [Header("Input ")]
     public InputActionProperty swingAction;
@@ -37,6 +37,7 @@ public class RopeSwing : MonoBehaviour
     private Vector3 swingPoint;
     private bool HasHit;
     private bool limitPullDirection = true;
+    private float playerHeight;
     
     private Vector3 yAxis = Vector3.up;
     
@@ -45,6 +46,12 @@ public class RopeSwing : MonoBehaviour
     {
         characterController = playerOrigin.gameObject.GetComponent<CharacterController>();
         playerRigidbody = playerOrigin.gameObject.GetComponent<Rigidbody>();
+        playerHeight = characterController.height;
+        Debug.Log("player rigid body y: " + playerRigidbody.position.y);
+        Debug.Log("character controller height:" + playerHeight);
+        playerRigidbody.linearDamping = 0f;     
+        Debug.Log("drag: " + playerRigidbody.linearDamping);
+        Debug.Log("angularDrag: " + playerRigidbody.angularDamping);
 
     }
 
@@ -69,10 +76,15 @@ public class RopeSwing : MonoBehaviour
         {
             ShrinkLimit();
         }
+        
         if (swingAction.action.WasReleasedThisFrame())
         {
-            
             StopSwing();
+        }
+
+        if (!swingAction.action.IsPressed())
+        {
+            toKinematic();
         }
     }
     public void StartSwing()
@@ -86,7 +98,6 @@ public class RopeSwing : MonoBehaviour
             joint.autoConfigureConnectedAnchor = false;
             joint.connectedAnchor = swingPoint;
             joint.anchor = Vector3.zero;    
-            // joint.connectedBody = null;
             
             Vector3 ropeDir = (swingPoint - playerRigidbody.position).normalized;
             joint.axis = playerRigidbody.transform.InverseTransformDirection(ropeDir); 
@@ -125,8 +136,7 @@ public class RopeSwing : MonoBehaviour
     public void StopSwing()
     {
         Destroy(joint);
-        characterController.enabled = true;
-        playerRigidbody.isKinematic = true; // turn off physics
+
     }
 
     public void GetSwingPoint()
@@ -211,5 +221,24 @@ public class RopeSwing : MonoBehaviour
         if (intensity > 0 && haptics != null)
             haptics.SendHapticImpulse(intensity, Time.deltaTime);
 
+    }
+
+    private bool isGrounded()
+    {
+        float rayLength = 0.01f;  
+        Debug.DrawRay(playerRigidbody.position, Vector3.down*rayLength, Color.red);
+
+        return Physics.Raycast(playerRigidbody.position, Vector3.down, rayLength);
+    }
+
+    private void toKinematic()
+    {
+        if (isGrounded())
+            {
+                // Debug.Log("Grounded, turn off rigid body");
+                playerRigidbody.linearVelocity = Vector3.zero;
+                characterController.enabled = true;
+                playerRigidbody.isKinematic = true; // turn off physics
+            }
     }
 }
