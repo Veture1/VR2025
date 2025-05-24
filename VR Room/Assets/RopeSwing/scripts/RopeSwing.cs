@@ -1,3 +1,5 @@
+using System;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -22,6 +24,9 @@ public class RopeSwing : MonoBehaviour
     public float damper=200f;
     public float shrinkSpeed = 5f;               // m/s
     public float minLimit = 0.3f;                // shortest rope length
+    public float playerAngularDrag=1.5f;
+    [Range(0, 10)] public float VerticalDegreeAllowance = 5f;
+    private float verticalCosAllowance;
 
     [Header("Optional Haptic Feedback")] 
     public HapticImpulsePlayer haptics;
@@ -53,7 +58,11 @@ public class RopeSwing : MonoBehaviour
         playerHeight = characterController.height;
         Debug.Log("player rigid body y: " + playerRigidbody.position.y);
         Debug.Log("character controller height:" + playerHeight);
-        playerRigidbody.linearDamping = 0f;     
+        playerRigidbody.linearDamping = 0f;
+        playerRigidbody.angularDamping = playerAngularDrag;
+        
+        verticalCosAllowance = Mathf.Cos(VerticalDegreeAllowance/180*Mathf.PI);
+        Debug.Log("Swing target direction considered vertical when cos > " + verticalCosAllowance);
         Debug.Log("drag: " + playerRigidbody.linearDamping);
         Debug.Log("angularDrag: " + playerRigidbody.angularDamping);
 
@@ -205,7 +214,7 @@ public class RopeSwing : MonoBehaviour
     public bool InVerticalDirection()
     {
         float cosWithYAxis = Vector3.Dot(startSwingHand.forward.normalized, yAxis);
-        if (cosWithYAxis >= 0.9 || cosWithYAxis < -0.9)
+        if (cosWithYAxis >= verticalCosAllowance|| cosWithYAxis < -verticalCosAllowance)
             return true;
         return false;
     }
