@@ -24,8 +24,9 @@ public class RopeSwing : MonoBehaviour
     public float damper=200f;
     public float shrinkSpeed = 5f;               // m/s
     public float minLimit = 0.3f;                // shortest rope length
-    public float playerAngularDrag=1.5f;
-    [Range(0, 10)] public float VerticalDegreeAllowance = 5f;
+    public float playerAngularDrag = 1.5f;
+    public float fallLinearDamping = 5f;
+    [Range(0, 20)] public float VerticalDegreeAllowance = 5f;
     private float verticalCosAllowance;
 
     [Header("Optional Haptic Feedback")] 
@@ -47,6 +48,9 @@ public class RopeSwing : MonoBehaviour
     private bool limitPullDirection = true;
     private float playerHeight;
     private bool wasGroundedLastFrame = true;
+    
+    private bool isFallingWithRope = false;
+
 
     private Vector3 yAxis = Vector3.up;
     
@@ -149,6 +153,8 @@ public class RopeSwing : MonoBehaviour
     public void StopSwing()
     {
         Destroy(joint);
+        isFallingWithRope = true;
+        playerRigidbody.linearDamping = fallLinearDamping; 
 
     }
 
@@ -177,21 +183,23 @@ public class RopeSwing : MonoBehaviour
             predictedPoint.gameObject.SetActive(false);
         }
     }
-
+    
+    
     public void DrawRope()
     {
-        if(!joint)
-        {
-           lineRenderer.enabled = false; 
-        }
-        else
+        if (joint || isFallingWithRope)
         {
             lineRenderer.enabled = true;
             lineRenderer.positionCount = 2;
             lineRenderer.SetPosition(0, startSwingHand.position);
             lineRenderer.SetPosition(1, swingPoint);
         }
+        else
+        {
+            lineRenderer.enabled = false;
+        }
     }
+
 
     public bool AllowedDirection()
     {
@@ -240,8 +248,9 @@ public class RopeSwing : MonoBehaviour
     {
         float rayLength = 0.01f;  
         // Debug.DrawRay(playerRigidbody.position, Vector3.down*rayLength, Color.red);
-
-        return Physics.Raycast(playerRigidbody.position, Vector3.down, rayLength);
+        bool rigidBodyGround = Physics.Raycast(playerRigidbody.position, Vector3.down, rayLength);
+        bool cameraGound = Physics.Raycast(playerOrigin.Camera.transform.position, Vector3.down, playerHeight+0.01f);
+        return cameraGound || rigidBodyGround;
     }
 
     private void HandleLanding()
@@ -252,6 +261,11 @@ public class RopeSwing : MonoBehaviour
         {
             toKinematic();       
             triggerFallSound();   
+            if (isFallingWithRope)
+            {
+                isFallingWithRope = false;
+                playerRigidbody.linearDamping = 0f; // 恢复正常 damping
+            }
         }
 
         wasGroundedLastFrame = grounded;
