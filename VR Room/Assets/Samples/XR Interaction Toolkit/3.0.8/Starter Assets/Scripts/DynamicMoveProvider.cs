@@ -109,6 +109,11 @@ namespace UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets
         private Coroutine m_FadeCoroutine;
 
 
+        [Header("Movement Smoothing")]
+        [SerializeField] private float acceleration = 2f;  // 加速缓冲系数
+        [SerializeField] private float deceleration = 4f; // 减速缓冲系数
+        private Vector2 m_SmoothedInput;                  // 当前平滑后的输入值
+
         /// <inheritdoc />
         protected override void Awake()
         {
