@@ -248,8 +248,9 @@ public class RopeSwing : MonoBehaviour
     {
         float rayLength = 0.01f;  
         // Debug.DrawRay(playerRigidbody.position, Vector3.down*rayLength, Color.red);
-
-        return Physics.Raycast(playerRigidbody.position, Vector3.down, rayLength);
+        bool rigidBodyGround = Physics.Raycast(playerRigidbody.position, Vector3.down, rayLength);
+        bool cameraGound = Physics.Raycast(playerOrigin.Camera.transform.position, Vector3.down, playerHeight+0.01f);
+        return cameraGound || rigidBodyGround;
     }
 
     private void HandleLanding()
