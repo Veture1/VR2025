@@ -7,6 +7,7 @@ public class DoorButton : MonoBehaviour
     [SerializeField] private Door door;
 
     [Header("Audio Clips")]
+    [SerializeField] private AudioClip pressSound;
     [SerializeField] private AudioClip errorSound;
     [SerializeField] private AudioClip successSound;
 
@@ -52,6 +53,10 @@ public class DoorButton : MonoBehaviour
 
     private void OnButtonPressed(SelectEnterEventArgs args)
     {
+        if (pressSound != null)
+        {
+            audioSource.PlayOneShot(pressSound);
+        }
         if (!isActivated)
         {
             if (errorSound != null)
@@ -67,10 +72,10 @@ public class DoorButton : MonoBehaviour
         Door.Instance.Open();
 
 
-        if (successSound != null)
-        {
-            audioSource.PlayOneShot(successSound);
-        }
+        //if (successSound != null)
+        //{
+        //    audioSource.PlayOneShot(successSound);
+        //}
 
         Debug.Log("[DoorButton] Door opened via button.");
     }
