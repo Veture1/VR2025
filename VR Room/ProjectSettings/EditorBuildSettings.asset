@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 0
-    path: Assets/Scenes/DemoScene.unity
+    path: Assets/Old/DemoScene.unity
     guid: 319dafa5c80f29f428dc1e0d03f04177
   - enabled: 1
     path: Assets/Scenes/Room_DemoVersion.unity
@@ -15,7 +15,7 @@ EditorBuildSettings:
     path: Assets/Scenes/RoomSample.unity
     guid: 451fdbb6e1c55e24aa26ec90d41ec1f2
   - enabled: 0
-    path: Assets/Scenes/SwingScene.unity
+    path: Assets/Old/SwingScene.unity
     guid: 0e3c88a27e50e9542ac0390465afd005
   - enabled: 0
     path: Assets/Scenes/DemoScene 1.unity
