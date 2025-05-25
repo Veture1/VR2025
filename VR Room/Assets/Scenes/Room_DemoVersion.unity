@@ -4795,6 +4795,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3398252525460325417, guid: 22fd5684ff0d94b2387453c04b33192c,
         type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3398252525460325417, guid: 22fd5684ff0d94b2387453c04b33192c,
+        type: 3}
       propertyPath: doorButton
       value: 
       objectReference: {fileID: 0}

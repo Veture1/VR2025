@@ -10,13 +10,24 @@ public class BlackScreenFader : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
+        //if (Instance != null && Instance != this)
+        //{
+        //    Destroy(gameObject);
+        //    return;
+        //}
+        //Instance = this;
+        //DontDestroyOnLoad(gameObject);
+        if (Instance == null)
         {
-            Destroy(gameObject);
-            return;
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
+        else
+        {
+            Destroy(gameObject); // ±‹√‚÷ÿ∏¥ µ¿˝
+        }
+
+        
         //blackImage = GetComponent<Image>();
         blackImage= transform.GetChild(0).GetComponent<Image>();
         blackImage.gameObject.SetActive(false); // ≥ı º“˛≤ÿ
@@ -49,5 +60,6 @@ public class BlackScreenFader : MonoBehaviour
         c.a = 0;
         blackImage.color = c;
         blackImage.gameObject.SetActive(false);
+        Debug.Log("FadeOut");
     }
 }

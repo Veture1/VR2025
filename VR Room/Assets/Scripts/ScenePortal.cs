@@ -12,11 +12,13 @@ public class ScenePortal : MonoBehaviour
     private bool moved = false;
     private void Awake()
     {
+        transform.parent = null; // 确保没有父物体
         DontDestroyOnLoad(gameObject);
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
         {
             audioSource = gameObject.AddComponent<AudioSource>();
+            Debug.Log("Target Scene Awake");
         }
     }
     //private void FixedUpdate()
@@ -32,6 +34,11 @@ public class ScenePortal : MonoBehaviour
     //    //    moved = false; 
     //    //}
     //}
+    void Start()
+    {
+        Debug.Log("Target Scene Start");
+ 
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (triggered) return;
@@ -68,15 +75,39 @@ public class ScenePortal : MonoBehaviour
         yield return new WaitForSeconds(3f);
 
         Debug.Log("3 seconds wait done, loading scene");
+        //AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(targetScene);
+        //while (!asyncLoad.isDone)
+        //{
+        //    yield return null;
+        //}
+        Debug.Log("Current Scene: " + SceneManager.GetActiveScene().name);
+        Debug.Log("Target Scene: " + targetScene);
+
+        if (!Application.CanStreamedLevelBeLoaded(targetScene))
+        {
+            Debug.LogError("Scene cannot be loaded: " + targetScene);
+            yield break;
+        }
+
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(targetScene);
+        asyncLoad.allowSceneActivation = true;
+        // Optional: If you want to force the scene to load completely before activating
+        asyncLoad.completed += (AsyncOperation op) => {
+            Debug.Log("Scene load completed!");
+        };
+        Debug.Log("Scene loading started...");
+
         while (!asyncLoad.isDone)
         {
+            Debug.Log("Scene loading progress: " + asyncLoad.progress);
             yield return null;
         }
 
+        Debug.Log("Scene loaded!");
+
+        Debug.Log("Fade out done, transition complete");
         // 场景加载完成后，再做淡出
         yield return fader.FadeOut();
-        Debug.Log("Fade out done, transition complete");
         gameObject.SetActive(false); // 关闭传送门对象
     }
 }
