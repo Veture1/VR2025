@@ -50,6 +50,7 @@ public class RopeSwing : MonoBehaviour
     private bool wasGroundedLastFrame = true;
     
     private bool isFallingWithRope = false;
+    private float lastFrameYPosition; 
 
 
     private Vector3 yAxis = Vector3.up;
@@ -69,6 +70,7 @@ public class RopeSwing : MonoBehaviour
         Debug.Log("Swing target direction considered vertical when cos > " + verticalCosAllowance);
         Debug.Log("drag: " + playerRigidbody.linearDamping);
         Debug.Log("angularDrag: " + playerRigidbody.angularDamping);
+        lastFrameYPosition = playerRigidbody.position.y;
 
     }
 
@@ -154,7 +156,7 @@ public class RopeSwing : MonoBehaviour
     {
         Destroy(joint);
         isFallingWithRope = true;
-        playerRigidbody.linearDamping = fallLinearDamping; 
+        playerRigidbody.linearDamping = fallLinearDamping;
 
     }
 
@@ -246,26 +248,25 @@ public class RopeSwing : MonoBehaviour
 
     private bool isGrounded()
     {
-        float rayLength = 0.01f;  
-        // Debug.DrawRay(playerRigidbody.position, Vector3.down*rayLength, Color.red);
+        float rayLength = 0.1f;
+        
+        Debug.DrawRay(playerRigidbody.position, Vector3.down*rayLength, Color.red);
         bool rigidBodyGround = Physics.Raycast(playerRigidbody.position, Vector3.down, rayLength);
-        bool cameraGound = Physics.Raycast(playerOrigin.Camera.transform.position, Vector3.down, playerHeight+0.01f);
-        return cameraGound || rigidBodyGround;
+        Debug.Log("rigidbodyGround: " + rigidBodyGround);
+        
+        return rigidBodyGround;
     }
 
     private void HandleLanding()
     {
         bool grounded = isGrounded();
-
-        if (grounded && !wasGroundedLastFrame)//just landed
+        Debug.Log("Grounded: "+grounded);
+        if (grounded && isFallingWithRope)//just landed
         {
             toKinematic();       
             triggerFallSound();   
-            if (isFallingWithRope)
-            {
-                isFallingWithRope = false;
-                playerRigidbody.linearDamping = 0f; // 恢复正常 damping
-            }
+            isFallingWithRope = false;
+            playerRigidbody.linearDamping = 0f;
         }
 
         wasGroundedLastFrame = grounded;
