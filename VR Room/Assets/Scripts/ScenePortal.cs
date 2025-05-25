@@ -19,19 +19,19 @@ public class ScenePortal : MonoBehaviour
             audioSource = gameObject.AddComponent<AudioSource>();
         }
     }
-    private void FixedUpdate()
-    {
-        if (TestDoor.Instance.isOpened && !moved)
-        {
-            ArrowFloat.Instance.MoveTo(transform); // 移动箭头到门上方
-            moved = true; // 只移动一次
-        }
-        if (moved && !TestDoor.Instance.isOpened)
-        {
-            ArrowFloat.Instance.MoveTo(TestDoorButton.Instance.transform); // 移回去
-            moved = false; 
-        }
-    }
+    //private void FixedUpdate()
+    //{
+    //    //if (TestDoor.Instance.isOpened && !moved)
+    //    //{
+    //    //    ArrowFloat.Instance.MoveTo(transform); // 移动箭头到门上方
+    //    //    moved = true; // 只移动一次
+    //    //}
+    //    //if (moved && !TestDoor.Instance.isOpened)
+    //    //{
+    //    //    ArrowFloat.Instance.MoveTo(TestDoorButton.Instance.transform); // 移回去
+    //    //    moved = false; 
+    //    //}
+    //}
     private void OnTriggerEnter(Collider other)
     {
         if (triggered) return;
@@ -46,7 +46,7 @@ public class ScenePortal : MonoBehaviour
     IEnumerator TransitionScene()
     {
         Debug.Log("Transition started");
-        Door.Instance.transform.parent.gameObject.SetActive(false); // 关闭门对象
+        //Door.Instance.transform.parent.gameObject.SetActive(false); // 关闭门对象
 
         // 播放传送音效
         if (teleportSound != null)
